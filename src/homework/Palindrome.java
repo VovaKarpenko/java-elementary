@@ -6,14 +6,16 @@ public class Palindrome {
         comparePalindrome(" А роза упала на лапу азора");
     }
 
-    public static void comparePalindrome(String str) {
+    public static boolean comparePalindrome(String str) {
         str = str.replace(" ", "");
         StringBuilder reversStr = new StringBuilder(str);
 
         if (str.equalsIgnoreCase(String.valueOf(reversStr.reverse()))) {
             System.out.println("da");
+            return true;
         } else {
             System.out.println("net");
+            return false;
         }
     }
 }
