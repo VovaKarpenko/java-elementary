@@ -1,25 +1,26 @@
 package homework;
 
-import java.util.Arrays;
-
 public class CommandLineArguments {
     public static void main(String[] args) {
 
-        int a = Integer.parseInt(args[0]);
-        int b = Integer.parseInt(args[2]);
-        switch (args[1]) {
-            case "+":
-                System.out.println(a + b);
-                break;
-            case "-":
-                System.out.println(a - b);
-                break;
-            case "*":
-                System.out.println(a * b);
-                break;
-            case "/":
-                System.out.println(a / b);
-                break;
+        System.out.println(calculate(Integer.parseInt(args[0]),Integer.parseInt(args[2]),args[1]));
+
+    }
+        public static int calculate (int num1, int num2 , String sum){
+            switch (sum) {
+                case "+":
+                   return num1 + num2;
+
+                case "-":
+                   return num1 - num2;
+
+                case "*":
+                    return num1 * num2;
+
+                case "/":
+                    return num1 / num2;
         }
+            System.out.println("ошибка");
+            return 0;
     }
 }
