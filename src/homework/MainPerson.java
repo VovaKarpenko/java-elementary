@@ -11,12 +11,12 @@ public class MainPerson {
         person[2] = new Person("Andrew", "Galkin", "1010");
         person[3] = new Person("Liana", "Kolodzheeva", "1731");
         person[4] = new Person("Nikita", "Serik", "2121");
-        showAll(person);
+        showAll();
         equalPeople(person[2], person[4]);
 
     }
 
-    public static void showAll(Object[] people) {
+    public static void showAll() {
         for (int i = 0; i < person.length - 1; i++) {
             System.out.println(person[i]);
         }
@@ -24,11 +24,11 @@ public class MainPerson {
 
     public static boolean equalPeople(Object person1, Object person2) {
         System.out.println("");
-        if (person[2].equals(person[4])) {
-            System.out.println(person[2] + " and " + person[4] + " equal");
+        if (person1.equals(person2)) {
+            System.out.println(person1 + " and " + person2 + " equal");
             return true;
         } else {
-            System.out.println(person[2] + " and " + person[4] + " not equal");
+            System.out.println(person1 + " and " + person2 + " not equal");
             return false;
         }
     }
