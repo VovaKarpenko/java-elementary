@@ -1,6 +1,4 @@
-package homework;
-
-import javax.jnlp.PersistenceService;
+package homework.homework1;
 
 public class MainPerson {
     static Person[] person = new Person[5];
@@ -22,7 +20,7 @@ public class MainPerson {
         }
     }
 
-    public static boolean equalPeople(Object person1, Object person2) {
+    public static boolean equalPeople(Person person1, Person person2) {
         System.out.println("");
         if (person1.equals(person2)) {
             System.out.println(person1 + " and " + person2 + " equal");
