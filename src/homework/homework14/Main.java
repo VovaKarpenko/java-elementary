@@ -24,5 +24,7 @@ public class Main {
 
         arr.remove(1);
         System.out.println(arr.toStrin());
+
+        System.out.println(arr.size());
     }
 }

@@ -4,10 +4,10 @@ public class LikeArraylist {
 
     String[] array = new String[10];
     String[] bufferArray = new String[0];
-    private int size =0;
+    private int size = 0;
 
     public void grow(int size) {
-        if (size%10==0){
+        if (size % 10 == 0) {
             bufferArray = new String[array.length + 10];
             for (int i = 0; i < array.length; i++) {
                 bufferArray[i] = array[i];
@@ -17,13 +17,12 @@ public class LikeArraylist {
         }
 
     }
-    public void add (String word){
-        grow(size+1);
-        array[size]=word;
+
+    public void add(String word) {
+        grow(size + 1);
+        array[size] = word;
         size++;
     }
-
-
 
 
     public void remove(int index) {
@@ -55,12 +54,12 @@ public class LikeArraylist {
     public String toStrin() {
         String result = "[";
         for (int i = 0; i < array.length; i++) {
-            if (array[i]==null){
+            if (array[i] == null) {
                 break;
             }
             result += array[i];
 
-            if (!(array[i+1]==null)) {
+            if (!(array[i + 1] == null)) {
                 result += " , ";
             }
 
@@ -69,6 +68,7 @@ public class LikeArraylist {
         return result;
     }
 
-
-
+    public int size (){
+        return size;
+    }
 }
