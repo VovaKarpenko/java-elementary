@@ -26,5 +26,7 @@ public class MainLinkedList {
 
         arr.add(0,99);
         System.out.println(arr);
+
+        System.out.println(arr.size());
     }
 }

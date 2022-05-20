@@ -3,7 +3,7 @@ package homework.homework15;
 import sun.net.www.protocol.http.ntlm.NTLMAuthentication;
 
 public class LikeLinkedList {
-    private static int size = 0;
+    private int size = 0;
     private Node first;
     private Node last;
 
@@ -50,7 +50,7 @@ public class LikeLinkedList {
             this.next = next;
             this.prev = prev;
             this.value = value;
-            size++;
+
         }
 
     }
@@ -62,12 +62,12 @@ public class LikeLinkedList {
         addElement.prev = newNode;
         if (prev == null) {
             first = newNode;
-        }else {
+        } else {
             prev.next = newNode;
         }
+        size++;
 
     }
-
 
 
     private void delete(Node remElement) {
@@ -111,7 +111,7 @@ public class LikeLinkedList {
             l.next = newNode;
 
         }
-
+        size++;
     }
 
     public int size() {
