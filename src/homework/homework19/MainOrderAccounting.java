@@ -67,11 +67,10 @@ public class MainOrderAccounting {
 
         String status;
         OrderStatus orderStatus;
-
+        printVariants(numOrder);
+        status = reader.readLine().toUpperCase(Locale.ROOT);
+        orderStatus = OrderStatus.valueOf(status);
         try {
-            printVariants(numOrder);
-            status = reader.readLine().toUpperCase(Locale.ROOT);
-            orderStatus = OrderStatus.valueOf(status);
             if (orders.get(numOrder).status.equals(OrderStatus.NEW) && (orderStatus.equals(OrderStatus.FAILED) || orderStatus.equals(OrderStatus.IN_PROGRESS) || orderStatus.equals(OrderStatus.FINISHED)) || orders.get(numOrder).status.equals(OrderStatus.IN_PROGRESS) && (orderStatus.equals(OrderStatus.FAILED) || orderStatus.equals(OrderStatus.FINISHED)) || orders.get(numOrder).status.equals(OrderStatus.FAILED) && (orderStatus.equals(OrderStatus.IN_PROGRESS) || orderStatus.equals(OrderStatus.FINISHED) || orderStatus.equals(OrderStatus.NEW))){
                 orders.get(numOrder).setStatus(orderStatus);
                 orders.get(numOrder).setUpdate(LocalDateTime.now());
