@@ -46,13 +46,13 @@ public class MainOrderAccounting {
 
             System.out.println("продолжить NEXT , закончить EXIT");
             endProgram = reader.readLine();
-         try {
-             if (!(endProgram.equalsIgnoreCase("next") || endProgram.equalsIgnoreCase("exit"))) {
-                 throw new InvalidCommandException("ERROR: такой команды не существует!!");
-             }
-         }catch (InvalidCommandException e){
-             System.out.println(e.getMessage());
-         }
+            try {
+                if (!(endProgram.equalsIgnoreCase("next") || endProgram.equalsIgnoreCase("exit"))) {
+                    throw new InvalidCommandException("ERROR: такой команды не существует!!");
+                }
+            } catch (InvalidCommandException e) {
+                System.out.println(e.getMessage());
+            }
 
         }
 
@@ -69,38 +69,36 @@ public class MainOrderAccounting {
         OrderStatus orderStatus;
 
         try {
-            if (orders.get(numOrder).status.equals(OrderStatus.NEW)) {
-                System.out.println("в какой статус перевести [IN_PROGRESS , FINISHED , FAILED]: ");
-                status = reader.readLine().toUpperCase(Locale.ROOT);
-                orderStatus = OrderStatus.valueOf(status);
-                if (orderStatus.equals(OrderStatus.FAILED) || orderStatus.equals(OrderStatus.IN_PROGRESS) || orderStatus.equals(OrderStatus.FINISHED)) {
-                    orders.get(numOrder).setStatus(orderStatus);
-                }
-            } else if (orders.get(numOrder).status.equals(OrderStatus.IN_PROGRESS)) {
-                System.out.println("в какой статус перевести [FINISHED , FAILED]: ");
-                status = reader.readLine().toUpperCase(Locale.ROOT);
-                orderStatus = OrderStatus.valueOf(status);
-                if (orderStatus.equals(OrderStatus.FAILED) || orderStatus.equals(OrderStatus.FINISHED)) {
-                    orders.get(numOrder).setStatus(orderStatus);
-                }
-            } else if (orders.get(numOrder).status.equals(OrderStatus.FAILED)) {
-                System.out.println("в какой статус перевести [IN_PROGRESS , FINISHED , NEW]: ");
-                status = reader.readLine().toUpperCase(Locale.ROOT);
-                orderStatus = OrderStatus.valueOf(status);
-                if (orderStatus.equals(OrderStatus.IN_PROGRESS) || orderStatus.equals(OrderStatus.FINISHED) || orderStatus.equals(OrderStatus.NEW)) {
-                    orders.get(numOrder).setStatus(orderStatus);
-                }
+            printVariants(numOrder);
+            status = reader.readLine().toUpperCase(Locale.ROOT);
+            orderStatus = OrderStatus.valueOf(status);
+            if (orders.get(numOrder).status.equals(OrderStatus.NEW) && (orderStatus.equals(OrderStatus.FAILED) || orderStatus.equals(OrderStatus.IN_PROGRESS) || orderStatus.equals(OrderStatus.FINISHED)) || orders.get(numOrder).status.equals(OrderStatus.IN_PROGRESS) && (orderStatus.equals(OrderStatus.FAILED) || orderStatus.equals(OrderStatus.FINISHED)) || orders.get(numOrder).status.equals(OrderStatus.FAILED) && (orderStatus.equals(OrderStatus.IN_PROGRESS) || orderStatus.equals(OrderStatus.FINISHED) || orderStatus.equals(OrderStatus.NEW))){
+                orders.get(numOrder).setStatus(orderStatus);
+                orders.get(numOrder).setUpdate(LocalDateTime.now());
+
+                System.out.println("обновление пройденно успешно");
+            }else {
+                throw new IllegalArgumentException();
             }
-            orders.get(numOrder).setUpdate(LocalDateTime.now());
-
-            System.out.println("обновление пройденно успешно");
-
         } catch (IllegalArgumentException e) {
             System.out.println("ERROR: такого статуса не существует!!");
         }
 
     }
 
+    private static void printVariants(int numOrder) {
+        switch (orders.get(numOrder).status) {
+            case NEW:
+                System.out.println("в какой статус перевести [IN_PROGRESS , FINISHED , FAILED]: ");
+                break;
+            case IN_PROGRESS:
+                System.out.println("в какой статус перевести [FINISHED , FAILED]: ");
+                break;
+            case FAILED:
+                System.out.println("в какой статус перевести [IN_PROGRESS , FINISHED , NEW]: ");
+                break;
+        }
+    }
 
     private static void newOrder(Integer numOrder) {
         orders.put(numOrder, new Order(numOrder, OrderStatus.NEW, LocalDateTime.now()));
@@ -132,14 +130,12 @@ public class MainOrderAccounting {
 
 
                 orders.put(Integer.parseInt(arrInfo[0]), new Order(Integer.parseInt(arrInfo[0]), orderStatus, LocalDateTime.parse(arrInfo[2])));
-                try {
-                    if (arrInfo[3] != null) {
 
-                        orders.get(Integer.parseInt(arrInfo[0])).setUpdate(LocalDateTime.parse(arrInfo[3]));
-                    }
-                } catch (ArrayIndexOutOfBoundsException ignored) {
+                if (arrInfo.length == 4) {
 
+                    orders.get(Integer.parseInt(arrInfo[0])).setUpdate(LocalDateTime.parse(arrInfo[3]));
                 }
+
                 System.out.println(line);
 
                 line = reader.readLine();
@@ -155,4 +151,6 @@ public class MainOrderAccounting {
         writer.print("");
         writer.close();
     }
+
+
 }
