@@ -1,12 +1,13 @@
 package homework.homework19;
 
-import com.sun.media.sound.InvalidFormatException;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static homework.homework19.OrderStatus.*;
 
 
 public class MainOrderAccounting {
@@ -25,21 +26,24 @@ public class MainOrderAccounting {
             System.out.println("Напишите номер заказа");
             Integer numOrder = Integer.parseInt(reader.readLine());
 
-            if (orders.get(numOrder) == null) {
-                newOrder(numOrder);
+            Order order = orders.get(numOrder);
 
-                System.out.println(orders.get(numOrder).toString());
+            if (order == null) {
+                Order order1 = newOrder(numOrder);
+                orders.put(order1.getNumOrder(), order1);
+
+                System.out.println(orders.get(numOrder));
                 System.out.println("");
             } else {
-                if (orders.get(numOrder).status == OrderStatus.FINISHED) {
+                if (order.getStatus() == OrderStatus.FINISHED) {
                     System.out.println("заказ закончен!");
 
-                    System.out.println(orders.get(numOrder).toString());
+                    System.out.println(order);
                     System.out.println("");
                 } else {
                     updateOrder(numOrder);
 
-                    System.out.println(orders.get(numOrder).toString());
+                    System.out.println(order);
                     System.out.println("");
                 }
             }
@@ -55,28 +59,28 @@ public class MainOrderAccounting {
             }
 
         }
-
-        for (Map.Entry<Integer, Order> order : orders.entrySet()) {
-            writeFile(order.getValue().info() + "\n");
-        }
+        writeFile();
     }
 
 
     private static void updateOrder(Integer numOrder) throws IOException {
-        System.out.println("Нынешний статус заказа " + numOrder + ": " + orders.get(numOrder).getStatus());
 
-        String status;
-        OrderStatus orderStatus;
-        printVariants(numOrder);
-        status = reader.readLine().toUpperCase(Locale.ROOT);
-        orderStatus = OrderStatus.valueOf(status);
+        OrderStatus status = orders.get(numOrder).getStatus();
+
+        System.out.println("Нынешний статус заказа " + numOrder + ": " + status);
+        printVariants(status);
+
         try {
-            if (orders.get(numOrder).status.equals(OrderStatus.NEW) && (orderStatus.equals(OrderStatus.FAILED) || orderStatus.equals(OrderStatus.IN_PROGRESS) || orderStatus.equals(OrderStatus.FINISHED)) || orders.get(numOrder).status.equals(OrderStatus.IN_PROGRESS) && (orderStatus.equals(OrderStatus.FAILED) || orderStatus.equals(OrderStatus.FINISHED)) || orders.get(numOrder).status.equals(OrderStatus.FAILED) && (orderStatus.equals(OrderStatus.IN_PROGRESS) || orderStatus.equals(OrderStatus.FINISHED) || orderStatus.equals(OrderStatus.NEW))){
-                orders.get(numOrder).setStatus(orderStatus);
+            String writtenStatus = reader.readLine().toUpperCase(Locale.ROOT);
+            OrderStatus writtenOrderStatus = OrderStatus.valueOf(writtenStatus);
+
+            if (comparison(status, writtenOrderStatus)) {
+
+                orders.get(numOrder).setStatus(writtenOrderStatus);
                 orders.get(numOrder).setUpdate(LocalDateTime.now());
 
                 System.out.println("обновление пройденно успешно");
-            }else {
+            } else {
                 throw new IllegalArgumentException();
             }
         } catch (IllegalArgumentException e) {
@@ -85,8 +89,20 @@ public class MainOrderAccounting {
 
     }
 
-    private static void printVariants(int numOrder) {
-        switch (orders.get(numOrder).status) {
+    private static boolean comparison(OrderStatus orderStatus, OrderStatus writtenOrderStatus) {
+        switch (orderStatus) {
+            case NEW:
+                return APPLICCABLE_FOR_NEW.contains(writtenOrderStatus);
+            case IN_PROGRESS:
+                return APPLICCABLE_FOR_IN_PROGRESS.contains(writtenOrderStatus);
+            case FAILED:
+                return APPLICCABLE_FOR_FAILED.contains(writtenOrderStatus);
+        }
+        return false;
+    }
+
+    private static void printVariants(OrderStatus status) {
+        switch (status) {
             case NEW:
                 System.out.println("в какой статус перевести [IN_PROGRESS , FINISHED , FAILED]: ");
                 break;
@@ -99,16 +115,19 @@ public class MainOrderAccounting {
         }
     }
 
-    private static void newOrder(Integer numOrder) {
-        orders.put(numOrder, new Order(numOrder, OrderStatus.NEW, LocalDateTime.now()));
+    private static Order newOrder(Integer numOrder) {
+        Order order = new Order(numOrder, OrderStatus.NEW, LocalDateTime.now());
         System.out.println("Заказ создан");
         System.out.println();
+        return order;
     }
 
-    private static void writeFile(String orders) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-            writer.write(orders);
+    private static void writeFile() {
 
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            for (Map.Entry<Integer, Order> order : orders.entrySet()) {
+                writer.write(order.getValue().getOrderAsString() + "\n");
+            }
         } catch (IOException e) {
             System.out.println("ERROR: " + e.getMessage());
         }
@@ -116,30 +135,17 @@ public class MainOrderAccounting {
     }
 
     private static void readFile() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(FILE_NAME));
-            String line = reader.readLine();
 
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));) {
+
+            String line = reader.readLine();
             while (line != null) {
 
-                String[] arrInfo = line.split(" ");
-
-                OrderStatus orderStatus = OrderStatus.valueOf(arrInfo[1]);
-
-
-                orders.put(Integer.parseInt(arrInfo[0]), new Order(Integer.parseInt(arrInfo[0]), orderStatus, LocalDateTime.parse(arrInfo[2])));
-
-                if (arrInfo.length == 4) {
-
-                    orders.get(Integer.parseInt(arrInfo[0])).setUpdate(LocalDateTime.parse(arrInfo[3]));
-                }
-
+                Order order = Order.getOrderFromString(line);
+                orders.put(order.getNumOrder(), order);
                 System.out.println(line);
-
                 line = reader.readLine();
             }
-            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

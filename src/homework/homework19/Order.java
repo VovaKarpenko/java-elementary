@@ -7,15 +7,27 @@ import java.time.format.DateTimeFormatter;
 
 public class Order {
 
-    Integer numOrder;
-    OrderStatus status;
-    LocalDateTime create;
-    LocalDateTime update;
+   private final Integer numOrder;
+   private OrderStatus status;
+   private final LocalDateTime create;
+   private LocalDateTime update;
 
     public Order(Integer numOrder, OrderStatus status, LocalDateTime create) {
         this.numOrder = numOrder;
         this.status = status;
         this.create = create;
+    }
+
+    public Integer getNumOrder() {
+        return numOrder;
+    }
+
+    public LocalDateTime getCreate() {
+        return create;
+    }
+
+    public LocalDateTime getUpdate() {
+        return update;
     }
 
     public void setUpdate(LocalDateTime update) {
@@ -39,7 +51,7 @@ public class Order {
         }
     }
 
-    public String info(){
+    public String getOrderAsString(){
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         String buffStatus = status.toString();
@@ -50,5 +62,17 @@ public class Order {
         }
         String buffNum = Integer.toString(numOrder);
         return buffNum + " " + buffStatus + " " + buffCreate + " " + buffUpdate;
+    }
+
+    public static Order getOrderFromString (String string){
+        String[] arrInfo = string.split(" ");
+        OrderStatus orderStatus = OrderStatus.valueOf(arrInfo[1]);
+        Integer numOrder = Integer.parseInt(arrInfo[0]);
+        Order order = new Order(numOrder, orderStatus, LocalDateTime.parse(arrInfo[2]));
+
+        if (arrInfo.length == 4) {
+            order.setUpdate(LocalDateTime.parse(arrInfo[3]));
+        }
+        return order;
     }
 }
