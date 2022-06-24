@@ -19,12 +19,12 @@ public class MainExecutors {
         for (int i = 0; i < 10; i++) {
             arr.add(executor.submit(new Count()));
         }
-        executor.shutdown();
+
         for (Future<Integer> ex : arr) {
             COUNT += ex.get();
         }
-
         System.out.println(COUNT);
+        executor.shutdown();
     }
 
     public static Integer counter(Integer plusOne) {
