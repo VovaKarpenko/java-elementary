@@ -1,6 +1,6 @@
 package homework.homework23;
 
-public class Genre {
+public class Genre implements Writeble {
      final String title;
      final String description;
 

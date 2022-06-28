@@ -2,7 +2,7 @@ package homework.homework23;
 
 import java.time.LocalDateTime;
 
-public class Book {
+public class Book implements Writeble{
     String title;
     String description;
     LocalDateTime releaseDate;

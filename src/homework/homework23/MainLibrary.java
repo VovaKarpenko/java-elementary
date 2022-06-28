@@ -51,8 +51,8 @@ public class MainLibrary {
             }
         }
         writeInFileGenre(GENRE_FILE_NAME, genreList);
-        writeInFileAuthor(AUTHOR_FILE_NAME, authorsList);
-        writeInFileBook(BOOK_FILE_NAME, bookList);
+        writeInFileGenre(AUTHOR_FILE_NAME, authorsList);
+        writeInFileGenre(BOOK_FILE_NAME, bookList);
     }
 
 
@@ -275,8 +275,7 @@ public class MainLibrary {
     }
 
     public static void drawGenre(List<Genre> genreList) {
-        Counter counter = new Counter();
-        genreList.forEach(genre -> System.out.println(counter.i++ + "" + genre));
+
 
     }
 
@@ -306,34 +305,11 @@ public class MainLibrary {
         return num <= arrSize && num >= 0;
     }
 
-    public static class Counter {
-        int i = 1;
-    }
 
-    public static void writeInFileGenre(String fileName, List<Genre> genreList) {
+    public static void writeInFileGenre(String fileName, List<? extends Writeble> list) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            for (Genre genre : genreList) {
-                writer.write(genre.convertToString());
-            }
-        } catch (IOException e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
-    }
-
-    public static void writeInFileAuthor(String fileName, List<Author> authorList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            for (Author author : authorList) {
-                writer.write(author.convertToString());
-            }
-        } catch (IOException e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
-    }
-
-    public static void writeInFileBook(String fileName, List<Book> bookList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            for (Book book : bookList) {
-                writer.write(book.convertToString());
+            for (Writeble object : list) {
+                writer.write(object.convertToString());
             }
         } catch (IOException e) {
             System.out.println("ERROR: " + e.getMessage());
@@ -399,4 +375,5 @@ public class MainLibrary {
         }
         return bookList;
     }
+
 }
